@@ -31,7 +31,7 @@ void Logger::logString(char *s) {
 	std::ofstream logStream(m_logfile, std::ofstream::app);
 	logStream << s << " at " << std::asctime(std::localtime(&result)) << std::endl;
 	logStream.close();
-	printf(" %s \n",s);
+	printf(" %s",s);
 }
 
 

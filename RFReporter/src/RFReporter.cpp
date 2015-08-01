@@ -38,12 +38,11 @@ int main(int argc, char* argv[]) {
 	I2CHandler i2cHandler(bus, addr);
 
 	while (1) {
-		printf("#1\n");
 		if (i2cHandler.write_byte(0x01) == -1) {
 			printf("write failed\n");
-			break;
+			sleep(delay);
+			continue;
 		}
-		printf("#2\n");
 		buflen = i2cHandler.read_byte();
 		printf("buflen=%d ",buflen);
 		if (buflen != 0) {
