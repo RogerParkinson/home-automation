@@ -22,7 +22,7 @@
 
 int main(int argc, char* argv[]) {
 
-	unsigned int delay = 3;
+	unsigned int delay = 4;
 	int triggerHour = 18;
 	unsigned char rByte = 0;
 	unsigned char addr = 0x26;
@@ -44,13 +44,13 @@ int main(int argc, char* argv[]) {
 			continue;
 		}
 		buflen = i2cHandler.read_byte();
-		printf("buflen=%d ",buflen);
-		if (buflen != 0) {
+		if (buflen != 0 && buflen != 255) {
+			printf("buflen=%d ",buflen);
 			for (i = 0; i < buflen && i < BUFFER_LENGTH; i++) {
 				buf[i] = i2cHandler.read_byte();
 				printf(" %d ",buf[i]);
 			}
-			if (1 /*buf[0] == HOME*/) {
+			if (buf[0] == HOME) {
 				if (buf[2] == LOW_POWER) {
 					sprintf(s, "low power for device %d ", buf[1]);
 					logger.logString(s);
@@ -63,8 +63,8 @@ int main(int argc, char* argv[]) {
 					logger.logString(s);
 				}
 			}
+			printf("\n");
 		}
-		printf("\n");
 		time_t now = time(0);
 		tm *ltm = localtime(&now);
 		int hour = ltm->tm_hour;
