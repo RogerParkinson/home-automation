@@ -2,7 +2,7 @@
 // Flash this to an ATTiny85 8MHz
 // wiring:
 // PB3 button
-// PB0 led
+// PB1 led
 // PB2 (pin 7) tx
 // It flashes the led on startup to show it is working
 // the button should be a reed switch in the final implementation
@@ -19,7 +19,7 @@
 #define DELAY 5000
 #define TXD_PIN  7
 #define VOLTAGE_PIN  3
-#define ledPin 0       //PB0
+#define ledPin 1       //PB0
 #define buttonPin PB3
 
 static uint8_t wakeFlag = 0;
@@ -123,11 +123,10 @@ void loop()
       }
     } else {
       digitalWrite(ledPin, true); // Flash a light to show transmiting
-//    vw_send((uint8_t *)msg, strlen(msg));
       vw_send(&message[0], 3);
       vw_wait_tx(); // Wait until the whole message is gone
-      digitalWrite(ledPin, false);
       delay(DELAY);
+      digitalWrite(ledPin, false);
     }
     wakeFlag=0;
 }
