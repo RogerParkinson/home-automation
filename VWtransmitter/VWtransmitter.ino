@@ -46,6 +46,7 @@ void setup_watchdog(int ii) {
   WDTCR |= _BV(WDIE);
 }
 
+// http://provideyourown.com/2012/secret-arduino-voltmeter-measure-battery-voltage/
 long readVcc() {
   // Read 1.1V reference against AVcc
   ADMUX = _BV(MUX3) | _BV(MUX2);
@@ -117,14 +118,17 @@ void loop()
     message[2] = EVENT;
     if (wakeFlag) {
       voltage = readVcc();
-//      if ((voltage < (1100 * 0.75)) &&  lowPowerCounter-- < 0) {
+      if ((voltage < 2500) &&  lowPowerCounter-- < 0) {
         message[2] = LOW_POWER;
-        message[3] = (voltage>>8) & 255;
-        message[4] = voltage & 255;
-        vw_send(&message[0], 5);
+        char m[50];
+        sprintf(m,"low power %ld\0", voltage);
+        for (int i=0;i<strlen(m)+1;i++) {
+          message[i+3] = m[i];
+        }
+        vw_send(&message[0], strlen(m)+3+1);
         vw_wait_tx(); // Wait until the whole message is gone
         lowPowerCounter = 1000;
-//      }
+      }
     } else {
       digitalWrite(ledPin, true); // Flash a light to show transmiting
       vw_send(&message[0], 3);

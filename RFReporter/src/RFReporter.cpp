@@ -46,7 +46,6 @@ int main(int argc, char* argv[]) {
 		buflen = i2cHandler.read_byte();
 		if (buflen != 0 && buflen != 255) {
 			std::time_t result = std::time(NULL);
-//			std::asctime(std::localtime(&result));
 			printf("%s buflen=%d ",std::asctime(std::localtime(&result)),buflen);
 			for (i = 0; i < buflen && i < BUFFER_LENGTH; i++) {
 				buf[i] = i2cHandler.read_byte();
@@ -54,8 +53,8 @@ int main(int argc, char* argv[]) {
 			}
 			if (buf[0] == HOME) {
 				if (buf[2] == LOW_POWER) {
-					sprintf(s, "low power for device %d ", buf[1]);
-					logger.logString(s);
+					buf[buflen]=0;
+					logger.logString((char*)&buf[3]);
 				} else if (buf[2] == EVENT) {
 					sprintf(s, "event for device %d ", buf[1]);
 					logger.logString(s);
