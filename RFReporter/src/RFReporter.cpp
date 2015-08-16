@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
 
 	unsigned int delay = 4;
 	int triggerHour = 18;
-	unsigned char rByte = 0;
+//	unsigned char rByte = 0;
 	unsigned char addr = 0x26;
 	unsigned char bus = 2;
 	int lastHour = -1;
@@ -45,7 +45,9 @@ int main(int argc, char* argv[]) {
 		}
 		buflen = i2cHandler.read_byte();
 		if (buflen != 0 && buflen != 255) {
-			printf("buflen=%d ",buflen);
+			std::time_t result = std::time(NULL);
+//			std::asctime(std::localtime(&result));
+			printf("%s buflen=%d ",std::asctime(std::localtime(&result)),buflen);
 			for (i = 0; i < buflen && i < BUFFER_LENGTH; i++) {
 				buf[i] = i2cHandler.read_byte();
 				printf(" %d ",buf[i]);
