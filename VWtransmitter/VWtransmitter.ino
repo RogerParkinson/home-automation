@@ -47,16 +47,18 @@ void setup_watchdog(int ii) {
 }
 
 long readVcc() {
-  long result;
   // Read 1.1V reference against AVcc
-  ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
+  ADMUX = _BV(MUX3) | _BV(MUX2);
   delay(2); // Wait for Vref to settle
   ADCSRA |= _BV(ADSC); // Convert
   while (bit_is_set(ADCSRA,ADSC));
-  result = ADCL;
-  result |= ADCH<<8;
-  result = 1125300L / result; // Back-calculate AVcc in mV
-  return result;
+  uint8_t low  = ADCL; // must read ADCL first - it then locks ADCH  
+  uint8_t high = ADCH; // unlocks both
+ 
+  long result = (high<<8) | low;
+ 
+  result = 1125300L / result; // Calculate Vcc (in mV); 1125300 = 1.1*1023*1000
+  return result; // Vcc in millivolts
 }
 
 void sleep() {
@@ -109,18 +111,20 @@ void loop()
 {
     int i;
     sleep();
-    uint8_t message[5];
+    uint8_t message[50];
     message[0] = HOME;
     message[1] = ID;
     message[2] = EVENT;
     if (wakeFlag) {
       voltage = readVcc();
-      if ((voltage < 1100 * 0.75) &&  lowPowerCounter-- < 0) {
+//      if ((voltage < (1100 * 0.75)) &&  lowPowerCounter-- < 0) {
         message[2] = LOW_POWER;
-        vw_send(&message[0], 3);
+        message[3] = (voltage>>8) & 255;
+        message[4] = voltage & 255;
+        vw_send(&message[0], 5);
         vw_wait_tx(); // Wait until the whole message is gone
         lowPowerCounter = 1000;
-      }
+//      }
     } else {
       digitalWrite(ledPin, true); // Flash a light to show transmiting
       vw_send(&message[0], 3);
