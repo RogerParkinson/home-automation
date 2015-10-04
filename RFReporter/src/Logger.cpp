@@ -38,7 +38,7 @@ void Logger::logString(char *s) {
 	void Logger::newLog() {
 		std::time_t result = std::time(NULL);
 
-		std::ofstream logStream("/home/receiver/log.txt", std::ofstream::out);
+		std::ofstream logStream("/home/receiver/log.txt", std::ofstream::app);
 		logStream << "New log " << std::asctime(std::localtime(&result))
 				<< std::endl;
 		logStream.close();
