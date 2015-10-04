@@ -5,7 +5,7 @@ Starting small. We have an simple 433Hz transmitter controlled by an attiny85 (c
 
 rx is connected to a beaglebone black (BBB) via I2C and it simply relays messages from the tx to the BBB.
 
-The message format is 3 bytes: target, sender, function, where target is normally 1, ie the home station, the rx/BBB combination and the sender is the id of the tx. This way we can have multiple tx's sending to one (or more) home stations.
+The message format is 4 bytes: length, target, sender, function, where target is normally 1, ie the home station, the rx/BBB combination and the sender is the id of the tx. This way we can have multiple tx's sending to one (or more) home stations. The message may contain a string in the following bytes but the initial byte always contains the overall length (but not including the length byte).
 
 Further out we can have the home stations sending to peripheral boxes as well.
 
