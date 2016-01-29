@@ -1,17 +1,17 @@
 // button activated transmitter
-// Flash this to an ATTiny85 8MHz
+// Flash this to an ATTiny85 8MHz (remember to burn the bootloader on a fresh ATTiny85)
 // wiring:
 // PB3 button
 // PB1 led
 // PB2 (pin 7) tx
 // It flashes the led on startup to show it is working
 // the button should be a reed switch in the final implementation
-// The ID should be changed to be unique forthis device
+// The ID should be changed to be unique for this device
 
 #include <VirtualWire.h>
 #include <avr/sleep.h>
 #include <avr/interrupt.h>
-#define ID 5
+#define ID 6
 #define HOME 1
 #define LOW_POWER 2
 #define EVENT 1
